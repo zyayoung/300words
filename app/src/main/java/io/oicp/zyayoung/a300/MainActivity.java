@@ -1,5 +1,7 @@
 package io.oicp.zyayoung.a300;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,7 +24,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     public Word[] words = new Word[305];
-    public int WordCnt=0;
+    public int WordCnt=0, meaningsPerSet = 50;
     Random random = new Random();
     private Meaning[] curLearningSet = new Meaning[200];
     private int[] curLearningState = new int[200];
@@ -85,6 +88,20 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton no = (FloatingActionButton) findViewById(R.id.no);
         final FloatingActionButton show = (FloatingActionButton) findViewById(R.id.show);
         final Button generate = (Button) findViewById(R.id.generate);
+        final NumberPicker numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
+        final TextView welcome1 =(TextView)findViewById(R.id.welcome1);
+        final TextView welcome2 =(TextView)findViewById(R.id.welcome2);
+
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(100);
+        //设置np1的当前值
+        numberPicker.setValue(meaningsPerSet);
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener(){
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                meaningsPerSet=newVal;
+            }
+        });
 
         generate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,10 +113,11 @@ public class MainActivity extends AppCompatActivity {
                 lastLearningPos = 0;
                 boolean[] unAvailable = new boolean[WordCnt];
                 int toChoose = random.nextInt(WordCnt);
-                for(int i=0;i<5;i++){
+                for(int i=0;i<meaningsPerSet;){
                     while (unAvailable[toChoose])toChoose = random.nextInt(WordCnt);
                     unAvailable[toChoose]=true;
                     Word chosenWord = words[toChoose];
+                    i+=chosenWord.meanings.length;
                     for (int j=0;j<chosenWord.meanings.length;j++){
                         curLearningState[totalLearningCnt]=1;
                         nextLearningPos[totalLearningCnt]=totalLearningCnt-1;
@@ -118,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 show.setVisibility(View.VISIBLE);
                 generate.setVisibility(View.INVISIBLE);
+                numberPicker.setVisibility(View.INVISIBLE);
+                welcome1.setVisibility(View.INVISIBLE);
+                welcome2.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -141,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setProgress(curLearningCnt);
                     if(curLearningCnt>=totalLearningCnt){
                         generate.setVisibility(View.VISIBLE);
+                        numberPicker.setVisibility(View.VISIBLE);
+                        welcome1.setVisibility(View.VISIBLE);
+                        welcome2.setVisibility(View.VISIBLE);
                         yes.setVisibility(View.INVISIBLE);
                         no.setVisibility(View.INVISIBLE);
                         MainTextView.setVisibility(View.INVISIBLE);
@@ -201,7 +225,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.toGithub) {
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            Uri content_url = Uri.parse("http://github.com/zyayoung/300words");
+            intent.setData(content_url);
+            startActivity(intent);
             return true;
         }
 

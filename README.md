@@ -1,1 +1,3 @@
-# Classical Chinese words
+# 三百实词
+
+高考三百文言实词辅助复习软件
