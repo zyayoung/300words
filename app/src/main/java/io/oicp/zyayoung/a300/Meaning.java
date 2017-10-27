@@ -8,7 +8,7 @@ import java.util.List;
  */
 
 public class Meaning {
-    public String word;
+    //public String word;
     public String meaning;
     public String[] example;
 }

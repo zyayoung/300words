@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="io.oicp.zyayoung.a300.MainActivity" >
     <item
+        android:id="@+id/reset"
+        android:orderInCategory="100"
+        android:title="清空已背诵数据"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/toGithub"
         android:orderInCategory="100"
-        android:title="前往GitHub"
+        android:title="前往 GitHub"
         app:showAsAction="never" />
 </menu>
